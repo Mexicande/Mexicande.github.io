@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="null">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Mexican" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Android客户端WebView调用支付宝,微信,QQ钱包等App支付｜Mexicande
+        
+    </title>
+
+    <link rel="canonical" href="http://haojen.github.io/2017/05/26/Android客户端WebView调用支付宝-微信-QQ钱包等App支付/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('http://oco8bvfr8.qnssl.com/blog-bg-black-run.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Mexican
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="http://oco8bvfr8.qnssl.com/blog-bg-black-run.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://oco8bvfr8.qnssl.com/blog-bg-black-run.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Android客户端WebView调用支付宝,微信,QQ钱包等App支付</h1>
+                    
+                    <span class="meta">
+                         作者 mexican
+                        <span>
+                          日期 2017-05-26
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Android客户端WebView调用支付宝,微信,QQ钱包等App支付
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>android和ios移动端开发，经常与碰到一些需要在移动端H5页面跳转打开微信、支付宝、QQ钱包、京东钱包等支付APP，H5页面很简单，需要预先设置好需要支付的金额和商户id之类，而剩下的就需要移动端来完成。</p>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><h4 id="webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器"><a href="#webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器" class="headerlink" title="webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器."></a>webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器.</h4><h5 id="1-首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的"><a href="#1-首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的" class="headerlink" title="1.首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的"></a>1.首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的</h5><p><code>setWebViewClient(WebViewClient client)方法。</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">   * Sets the WebViewClient that will receive various notifications and</div><div class="line">   * requests. This will replace the current handler.</div><div class="line">   *</div><div class="line">   * <span class="doctag">@param</span> client an implementation of WebViewClient</div><div class="line">   */</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWebViewClient</span><span class="params">(WebViewClient client)</span> </span>&#123;</div><div class="line">      checkThread();</div><div class="line">      mProvider.setWebViewClient(client);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>在上面WebView可以看出，WebViewClient用于接收H5页面发出的各种通知和请求。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">webview.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageStarted</span><span class="params">(WebView view, String url, Bitmap favicon)</span> </span>&#123;</div><div class="line">				<span class="comment">// 网页加载开始</span></div><div class="line">				<span class="keyword">super</span>.onPageStarted(view, url, favicon);</div><div class="line">				</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageFinished</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">				<span class="comment">// 网页加载结束</span></div><div class="line">				<span class="keyword">super</span>.onPageFinished(view, url);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			<span class="meta">@Override</span></div><div class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> 	<span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">			<span class="comment">//重要的是这个方法，</span></div><div class="line">			<span class="comment">//只有在调用webview.load(URL)的时候才会调用。</span></div><div class="line">			&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>webview.loadUrl(&quot;H5&quot;);</code></p>
+<p>但发起请求的时候后，webview的连续动作是先后请求两个url</p>
+<p><code>1.https://mobilecodec.alipay.com/client_download.htm?qrcode=bax05351pgjhc4yegd2y2084</code></p>
+<p><code>2.https://ds.alipay.com/from=mobilecodec&amp;scheme=alipayqr%3A%2F%2Fplatformapi%2Fstartapp%3FsaId%3D10000007%26clientVersion%3D3.7.0.0718%26qrcode%3Dhttps%253A%252F%252Fqr.alipay.com%252Fbax05351pgjhc4yegd2y2084%253F_s%253Dweb-other</code><br>`<br>之后返回一个意图，也是用这个意图来打开支付宝app</p>
+<p><code>intent://platformapi/startapp?saId=10000007&amp;clientVersion=3.7.0.0718&amp;qrcode=https%3A%2F%2Fqr.alipay.com%2Fbax05351pgjhc4yegd2y2084%3F_s%3Dwebother&amp;_t=1474448799004#Intent;scheme=alipayqr;package=com.eg.Android.AlipayGphone;end</code></p>
+<h3 id="支付宝支付"><a href="#支付宝支付" class="headerlink" title="支付宝支付"></a>支付宝支付</h3><figure class="highlight java"><table><tr><td class="code"><pre><div class="line">	WebSettings webSettings = webview.getSettings();</div><div class="line">	webSettings.setJavaScriptEnabled(<span class="keyword">true</span>);</div><div class="line">	webSettings.setAllowFileAccess(<span class="keyword">true</span>);</div><div class="line">	webSettings.setBuiltInZoomControls(<span class="keyword">true</span>);</div><div class="line">	webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);</div><div class="line">	webSettings.setDomStorageEnabled(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">	webSettings.setGeolocationEnabled(<span class="keyword">true</span>);</div><div class="line">	</div><div class="line">	webview.loadUrl(<span class="string">"H5"</span>);</div><div class="line"></div><div class="line">	webview.setWebViewClient(<span class="keyword">new</span> WebViewClient()&#123;</div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageStarted</span><span class="params">(WebView view, String url, Bitmap favicon)</span> </span>&#123;</div><div class="line">			<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">			<span class="keyword">super</span>.onPageStarted(view, url, favicon);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageFinished</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">			<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">			<span class="keyword">super</span>.onPageFinished(view, url);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">			Log.e(TAG, <span class="string">"url"</span> + url);</div><div class="line">			<span class="keyword">if</span> (parseScheme(url)) &#123;</div><div class="line">				<span class="keyword">try</span> &#123;</div><div class="line">					Uri uri = Uri.parse(url);</div><div class="line">					Intent intent;</div><div class="line">					intent = Intent.parseUri(url,</div><div class="line">							Intent.URI_INTENT_SCHEME);</div><div class="line">					intent.addCategory(<span class="string">"android.intent.category.BROWSABLE"</span>);</div><div class="line">					intent.setComponent(<span class="keyword">null</span>);</div><div class="line">					<span class="comment">// intent.setSelector(null);</span></div><div class="line">					startActivity(intent);</div><div class="line"></div><div class="line">				&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">					Toast.makeText(MainActivity.<span class="keyword">this</span>,<span class="string">"请安装最新版支付宝"</span>,Toast.LENGTH_SHORT).show();</div><div class="line"></div><div class="line">				&#125;</div><div class="line">			&#125; <span class="keyword">else</span> &#123;</div><div class="line"></div><div class="line">				view.loadUrl(url);</div><div class="line">			&#125;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">		&#125;</div><div class="line">	&#125;);</div><div class="line">	</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">parseScheme</span><span class="params">(String url)</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">if</span> (url.contains(<span class="string">"platformapi/startapp"</span>)) &#123;</div><div class="line"></div><div class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">	&#125; <span class="keyword">else</span> &#123;</div><div class="line"></div><div class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面”android.intent.category.BROWSABLE”<br>具体含义参考<br><code>http://blog.csdn.net/gf771115/article/details/7827833</code></p>
+<h3 id="微信支付"><a href="#微信支付" class="headerlink" title="微信支付"></a>微信支付</h3><pre><code>调用微信支付基本和上面同理，只需将(url.contains(&quot;platformapi/startapp&quot;))中的“platformapi/startapp”改成微信的“weixin://wap/pay?”即可
+</code></pre>
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/20/Android-assets/" data-toggle="tooltip" data-placement="top"
+                           title="Android assets">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android"><span class="toc-text">Android</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器"><span class="toc-text">webview在加载网页的时候会默认调起手机自带的浏览器加载网页，用户体验不好。但当设置（setWebViewClient）设置这样的监听事件之后，当请求url的时候就不会打开手机自带的浏览器.</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的"><span class="toc-text">1.首先移动端需要拦截到H5的点击之后发出的指令，这就需要WebView的</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#支付宝支付"><span class="toc-text">支付宝支付</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#微信支付"><span class="toc-text">微信支付</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/mexican">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Mexicande">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Mexican 2017
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://haojen.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="null">
+</body>
+
+</html>
