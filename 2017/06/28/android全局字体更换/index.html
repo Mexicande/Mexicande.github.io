@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        WebView内存泄露｜Mexicande
+        android全局字体更换 ｜Mexicande
         
     </title>
 
-    <link rel="canonical" href="http://haojen.github.io/2017/06/21/WebView内存泄露/">
+    <link rel="canonical" href="http://haojen.github.io/2017/06/28/android全局字体更换/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,12 +137,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>WebView内存泄露</h1>
+                    <h1>android全局字体更换 </h1>
                     
                     <span class="meta">
                          作者 mexican
                         <span>
-                          日期 2017-06-21
+                          日期 2017-06-28
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -154,7 +154,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            WebView内存泄露
+            android全局字体更换 
         </span>
     </div>
 </header>
@@ -165,26 +165,18 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>WebView内存无法释放解决办法</p>
-<p>XML</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;FrameLayout</div><div class="line">     android:id="@+id/web_container"</div><div class="line">     android:layout_width="match_parent"</div><div class="line">     android:layout_height="match_parent"&gt;</div><div class="line"></div><div class="line">     &lt;ProgressBar</div><div class="line">         android:id="@+id/web_progress_bar"</div><div class="line">         style="?android:attr/progressBarStyleHorizontal"</div><div class="line">         android:layout_width="match_parent"</div><div class="line">         android:layout_height="3dp"</div><div class="line">         android:background="@android:color/transparent"</div><div class="line">         android:indeterminateOnly="false"</div><div class="line">         android:visibility="visible"/&gt;</div><div class="line"> &lt;/FrameLayout&gt;</div></pre></td></tr></table></figure>
-<p>java</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="meta">@Bind</span>(R.id.web_container)</div><div class="line">FrameLayout mContainer;</div><div class="line"></div><div class="line"><span class="keyword">private</span> WebView mWebView;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.activity_html);</div><div class="line">    ButterKnife.bind(<span class="keyword">this</span>);</div><div class="line">    mWebView = <span class="keyword">new</span> WebView(<span class="keyword">this</span>);</div><div class="line">    FrameLayout.LayoutParams lp = <span class="keyword">new</span> FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);</div><div class="line">    mWebView.setLayoutParams(lp);</div><div class="line">    mContainer.addView(mWebView, <span class="number">0</span>);</div><div class="line">   </div><div class="line">&#125;</div><div class="line">  <span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onDestroy();</div><div class="line">    mContainer.removeAllViews();</div><div class="line">    mWebView.removeAllViews();</div><div class="line">    mWebView.destroy();</div><div class="line">    mWebView = <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+                <h3 id="全局更换字体"><a href="#全局更换字体" class="headerlink" title="全局更换字体"></a>全局更换字体</h3><p>-</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">通过反射获取主题字体并设置新字体</div><div class="line">  private void initTypeface()&#123;</div><div class="line">        try &#123;</div><div class="line">            Field field = Typeface.class.getDeclaredField("SERIF");</div><div class="line">            field.setAccessible(true);</div><div class="line">            field.set(null, Typeface.createFromAsset(getAssets(), "fonts/msyh.ttf"));</div><div class="line">        &#125; catch (NoSuchFieldException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; catch (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">```    </div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">```java</div><div class="line">在AppTheme中添加设置主题字体</div><div class="line"> &lt;style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"&gt;</div><div class="line">        &lt;!-- Customize your theme here. --&gt;</div><div class="line">        &lt;item name="colorPrimary"&gt;@color/colorPrimary&lt;/item&gt;</div><div class="line">        &lt;item name="colorPrimaryDark"&gt;@color/colorPrimaryDark&lt;/item&gt;</div><div class="line">        &lt;item name="colorAccent"&gt;@color/colorAccent&lt;/item&gt;</div><div class="line">        &lt;item name="android:typeface"&gt;serif&lt;/item&gt;</div><div class="line"></div><div class="line">    &lt;/style&gt;</div></pre></td></tr></table></figure>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2017/06/28/android全局字体更换/" data-toggle="tooltip" data-placement="top"
-                           title="android全局字体更换 ">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/06/15/android-N-7-0之运行时注解/" data-toggle="tooltip" data-placement="top"
-                           title="android N 7.0之运行时注解">Next Post &rarr;</a>
+                        <a href="/2017/06/21/WebView内存泄露/" data-toggle="tooltip" data-placement="top"
+                           title="WebView内存泄露">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -200,7 +192,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#全局更换字体"><span class="toc-text">全局更换字体</span></a></li></ol>
                 </div>
             </div>
         </div>
