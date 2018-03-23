@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        android-画虚线｜Mexicande
+        Intellij Servlet搭建遇到的问题｜Mexicande
         
     </title>
 
-    <link rel="canonical" href="http://haojen.github.io/2017/09/29/android-画虚线/">
+    <link rel="canonical" href="http://haojen.github.io/2017/11/01/Intellij-Servlet搭建遇到的问题/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,12 +137,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>android-画虚线</h1>
+                    <h1>Intellij Servlet搭建遇到的问题</h1>
                     
                     <span class="meta">
                          作者 mexican
                         <span>
-                          日期 2017-09-29
+                          日期 2017-11-01
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -154,7 +154,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            android-画虚线
+            Intellij Servlet搭建遇到的问题
         </span>
     </div>
 </header>
@@ -165,32 +165,24 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <hr>
-<h2 id="水平虚线"><a href="#水平虚线" class="headerlink" title="水平虚线"></a>水平虚线</h2><figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;shape xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    android:shape="line"&gt;</div><div class="line">    &lt;!-- 显示一条虚线，破折线的宽度为dashWith，破折线之间的空隙的宽度为dashGap，当dashGap=0dp时，为实线 --&gt;</div><div class="line">    &lt;stroke android:width="1dp" android:color="#eeeeee"</div><div class="line">        android:dashWidth="2dp" android:dashGap="3dp" /&gt;</div><div class="line">    &lt;!-- 虚线的高度 --&gt;</div><div class="line">    &lt;size android:height="2dp" /&gt;</div><div class="line">&lt;/shape&gt;</div></pre></td></tr></table></figure>
-<ol>
-<li><p>dashwidth是指- - -中每一个-的宽度，dashGap是指- - -中每一个间隔的宽度，如果dashwidth和dashGap中有一个为0，那么这条线就是一条实线。width是指这条线的宽度，在横的虚线上体现出来就是这条线的竖直方向的高度。</p>
-</li>
-<li><p>把这个drawable作为一个view的背景时，需要设置view的layerType为software，不然在真机上显示出来是一条实线。</p>
-</li>
-<li><p>作为背景的view的layout_height要超过drawble的stroke的width，不然显示不出来。</p>
-</li>
-</ol>
-<h2 id="竖直虚线"><a href="#竖直虚线" class="headerlink" title="竖直虚线"></a>竖直虚线</h2><p><a href="http://www.jianshu.com/p/8d384490a180" target="_blank" rel="external">http://www.jianshu.com/p/8d384490a180</a></p>
-
+                <h4 id="一-控制台中文乱码"><a href="#一-控制台中文乱码" class="headerlink" title="一.控制台中文乱码"></a>一.控制台中文乱码</h4><hr>
+<p>Run–&gt;Edit Configurations–&gt;VM options:添加下面这段</p>
+<pre><code>&quot;-Dfile.encoding=UTF-8&quot;
+</code></pre>
                 <hr>
                 
 
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/10/25/生命中的时光/" data-toggle="tooltip" data-placement="top"
-                           title="生命中的时光">&larr; Previous Post</a>
+                        <a href="/2018/03/23/RecyclerView刷新闪烁/" data-toggle="tooltip" data-placement="top"
+                           title="RecyclerView刷新闪烁">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/09/28/布局抢占焦点/" data-toggle="tooltip" data-placement="top"
-                           title="Android 多布局抢占焦点">Next Post &rarr;</a>
+                        <a href="/2017/10/27/稻草人/" data-toggle="tooltip" data-placement="top"
+                           title="稻草人">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -206,7 +198,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#水平虚线"><span class="toc-text">水平虚线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#竖直虚线"><span class="toc-text">竖直虚线</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一-控制台中文乱码"><span class="toc-text">一.控制台中文乱码</span></a></li></ol>
                 </div>
             </div>
         </div>

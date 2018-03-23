@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        android-画虚线｜Mexicande
+        RecyclerView刷新闪烁｜Mexicande
         
     </title>
 
-    <link rel="canonical" href="http://haojen.github.io/2017/09/29/android-画虚线/">
+    <link rel="canonical" href="http://haojen.github.io/2018/03/23/RecyclerView刷新闪烁/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,12 +137,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>android-画虚线</h1>
+                    <h1>RecyclerView刷新闪烁</h1>
                     
                     <span class="meta">
                          作者 mexican
                         <span>
-                          日期 2017-09-29
+                          日期 2018-03-23
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -154,7 +154,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            android-画虚线
+            RecyclerView刷新闪烁
         </span>
     </div>
 </header>
@@ -165,32 +165,28 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <hr>
-<h2 id="水平虚线"><a href="#水平虚线" class="headerlink" title="水平虚线"></a>水平虚线</h2><figure class="highlight"><table><tr><td class="code"><pre><div class="line">&lt;shape xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    android:shape="line"&gt;</div><div class="line">    &lt;!-- 显示一条虚线，破折线的宽度为dashWith，破折线之间的空隙的宽度为dashGap，当dashGap=0dp时，为实线 --&gt;</div><div class="line">    &lt;stroke android:width="1dp" android:color="#eeeeee"</div><div class="line">        android:dashWidth="2dp" android:dashGap="3dp" /&gt;</div><div class="line">    &lt;!-- 虚线的高度 --&gt;</div><div class="line">    &lt;size android:height="2dp" /&gt;</div><div class="line">&lt;/shape&gt;</div></pre></td></tr></table></figure>
-<ol>
-<li><p>dashwidth是指- - -中每一个-的宽度，dashGap是指- - -中每一个间隔的宽度，如果dashwidth和dashGap中有一个为0，那么这条线就是一条实线。width是指这条线的宽度，在横的虚线上体现出来就是这条线的竖直方向的高度。</p>
-</li>
-<li><p>把这个drawable作为一个view的背景时，需要设置view的layerType为software，不然在真机上显示出来是一条实线。</p>
-</li>
-<li><p>作为背景的view的layout_height要超过drawble的stroke的width，不然显示不出来。</p>
-</li>
-</ol>
-<h2 id="竖直虚线"><a href="#竖直虚线" class="headerlink" title="竖直虚线"></a>竖直虚线</h2><p><a href="http://www.jianshu.com/p/8d384490a180" target="_blank" rel="external">http://www.jianshu.com/p/8d384490a180</a></p>
+                <p>RecyclerView刷新会有一个阴影动画闪烁，<br>问题：加载更多用notifyDataSetChanged()刷新图片闪烁</p>
+<p>原因：notifyDataSetChanged()会导致整个itemview刷新，已经测试：相同position刷新其itemview是不同的对象，例如，刷新后，position为12的用了position为13的itemview，再次刷新时，又用了position为10的itemview，这样次position上对应的itemview的ImageView就会在重设size时发生闪烁，此现象是可以用肉眼看到的。</p>
+<p>解决方法：</p>
+<p>用notifyItemRangeInserted()进行增加数据使用的局部刷新，这样原先的itemview就不会重绘</p>
+<p>或者用notifyItemRangeChanged() 进行单纯的局部刷新</p>
+<p>注意：虽然方法是用来局部刷新的，但我们可以把局部刷新变成全部刷新，itemCount设成list.size()就可以实现不闪烁的全部刷新了，但最好加上这一句((SimpleItemAnimator)imagesListView.getItemAnimator()).setSupportsChangeAnimations(false);取消RecyclerView的动画效果，不然刷新的话的确不会快闪但会有个动画效果，体验也是不怎么好的。</p>
+<p>我在项目中使用了：</p>
+<p>　　项目场景： 加载网络图片 进行点击刷新 调用时习惯性调用notifyDataSetChanged() 然后出现闪烁情况，图片越多闪烁越严重.</p>
+<p>　　改进方法：</p>
+<p>　　1.先调用((SimpleItemAnimator)imagesListView.getItemAnimator()).setSupportsChangeAnimations(false); //取消RecyclerView的动画效果</p>
+<p>　　2.刷新列表使用了mAdapter.notifyItemRangeChanged(0,imageList.size()); //进行列表全部刷新 </p>
+<p>　　很完美的解决了。</p>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2017/10/25/生命中的时光/" data-toggle="tooltip" data-placement="top"
-                           title="生命中的时光">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/09/28/布局抢占焦点/" data-toggle="tooltip" data-placement="top"
-                           title="Android 多布局抢占焦点">Next Post &rarr;</a>
+                        <a href="/2017/11/01/Intellij-Servlet搭建遇到的问题/" data-toggle="tooltip" data-placement="top"
+                           title="Intellij Servlet搭建遇到的问题">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -206,7 +202,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#水平虚线"><span class="toc-text">水平虚线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#竖直虚线"><span class="toc-text">竖直虚线</span></a></li></ol>
+                    
                 </div>
             </div>
         </div>
