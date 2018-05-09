@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        RecyclerView刷新闪烁｜Mexicande
+        android 屏幕任意view截屏和图片拼接｜Mexicande
         
     </title>
 
-    <link rel="canonical" href="http://haojen.github.io/2018/03/23/RecyclerView刷新闪烁/">
+    <link rel="canonical" href="http://haojen.github.io/2018/05/04/android-屏幕任意view截屏和图片拼接/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -137,12 +137,12 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>RecyclerView刷新闪烁</h1>
+                    <h1>android 屏幕任意view截屏和图片拼接</h1>
                     
                     <span class="meta">
                          作者 mexican
                         <span>
-                          日期 2018-03-23
+                          日期 2018-05-04
                          </span>
                     </span>
                     <div class="tags text-center">
@@ -154,7 +154,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            RecyclerView刷新闪烁
+            android 屏幕任意view截屏和图片拼接
         </span>
     </div>
 </header>
@@ -165,33 +165,18 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>RecyclerView刷新会有一个阴影动画闪烁，<br>问题：加载更多用notifyDataSetChanged()刷新图片闪烁</p>
-<p>原因：notifyDataSetChanged()会导致整个itemview刷新，已经测试：相同position刷新其itemview是不同的对象，例如，刷新后，position为12的用了position为13的itemview，再次刷新时，又用了position为10的itemview，这样次position上对应的itemview的ImageView就会在重设size时发生闪烁，此现象是可以用肉眼看到的。</p>
-<p>解决方法：</p>
-<p>用notifyItemRangeInserted()进行增加数据使用的局部刷新，这样原先的itemview就不会重绘</p>
-<p>或者用notifyItemRangeChanged() 进行单纯的局部刷新</p>
-<p>注意：虽然方法是用来局部刷新的，但我们可以把局部刷新变成全部刷新，itemCount设成list.size()就可以实现不闪烁的全部刷新了，但最好加上这一句((SimpleItemAnimator)imagesListView.getItemAnimator()).setSupportsChangeAnimations(false);取消RecyclerView的动画效果，不然刷新的话的确不会快闪但会有个动画效果，体验也是不怎么好的。</p>
-<p>我在项目中使用了：</p>
-<p>　　项目场景： 加载网络图片 进行点击刷新 调用时习惯性调用notifyDataSetChanged() 然后出现闪烁情况，图片越多闪烁越严重.</p>
-<p>　　改进方法：</p>
-<p>　　1.先调用((SimpleItemAnimator)imagesListView.getItemAnimator()).setSupportsChangeAnimations(false); //取消RecyclerView的动画效果</p>
-<p>　　2.刷新列表使用了mAdapter.notifyItemRangeChanged(0,imageList.size()); //进行列表全部刷新 </p>
-<p>　　很完美的解决了。</p>
+                <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">   View dView = &quot;需要截屏的view&quot;;</div><div class="line">   dView.setDrawingCacheEnabled(true);</div><div class="line">   dView.buildDrawingCache();</div><div class="line">   //获得图片bitmap</div><div class="line">   Bitmap bitmap = Bitmap.createBitmap(dView.getDrawingCache());</div><div class="line">   </div><div class="line">   //本地图片转Bitmap</div><div class="line">  Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.corp);</div><div class="line"></div><div class="line">//根本屏幕宽度缩放图片达到与截取图片同宽度</div><div class="line">int secreenWidth = 	getActivity().getWindowManager().getDefaultDisplay().getWidth();</div><div class="line"> float scaleWidth = ((float) secreenWidth) / width;</div><div class="line">// 取得想要缩放的matrix参数</div><div class="line">   Matrix matrix = new Matrix();</div><div class="line">   matrix.postScale(scaleWidth, scaleWidth);</div><div class="line">	 Bitmap visiableBitmap = Bitmap.createBitmap(bmp, 0, 0,  bmp.getWidth(),</div><div class="line">  bmp.getHeight(), matrix, true);</div><div class="line">                </div><div class="line">     //获取的拼接之后的图片          </div><div class="line">   Bitmap bitmap1 = splitVertical(visiableBitmap, bitmap);</div><div class="line">   </div><div class="line">   		//拼接两张图片 垂直方向</div><div class="line">     public static Bitmap splitVertical(Bitmap first, Bitmap second) &#123;</div><div class="line">        int width = Math.max(first.getWidth(), second.getWidth());</div><div class="line">        int height = first.getHeight() + second.getHeight();</div><div class="line">        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);</div><div class="line">        Canvas canvas = new Canvas(result);</div><div class="line">        canvas.drawBitmap(first, 0, 0, null);</div><div class="line">        canvas.drawBitmap(second, 0, first.getHeight(), null);</div><div class="line">        return result;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><img src="http://orqk6filp.bkt.clouddn.com/WechatIMG413.jpeg" alt=""></p>
 
                 <hr>
                 
 
                 <ul class="pager">
                     
-                    <li class="previous">
-                        <a href="/2018/05/04/android-屏幕任意view截屏和图片拼接/" data-toggle="tooltip" data-placement="top"
-                           title="android 屏幕任意view截屏和图片拼接">&larr; Previous Post</a>
-                    </li>
-                    
                     
                     <li class="next">
-                        <a href="/2017/11/01/Intellij-Servlet搭建遇到的问题/" data-toggle="tooltip" data-placement="top"
-                           title="Intellij Servlet搭建遇到的问题">Next Post &rarr;</a>
+                        <a href="/2018/03/23/RecyclerView刷新闪烁/" data-toggle="tooltip" data-placement="top"
+                           title="RecyclerView刷新闪烁">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
